@@ -1,7 +1,4 @@
 # Data332
-## test
-### 
-<p>      </p>
+## A repo for my work in the data 332 class. 
 
-<img src="images/trucking locations.png" height = 250, width = 400>
 
