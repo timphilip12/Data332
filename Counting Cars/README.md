@@ -14,5 +14,12 @@ The collected data was recorded in the excel file Car_Data.xlsx
 7. Weather: The weather at the time of the collection
 8. Name: The name of the person that recorded the vehicle
 
-
+## Data cleaning
+1. Get rid of any mispelling manually to make sure that the data will be used correctly in R
+2. Get the time into a readable format using this code:
+```
+df <- df %>%
+  mutate(date_time = as.POSIXlt(date_time, format = "%Y-%m-%d %H:%M:%S"),
+         date_time = format(date_time, "%H:%M:%S"))
+```
 
