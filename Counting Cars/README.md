@@ -25,7 +25,7 @@ df <- df %>%
 ## Shiny Application
 ### User Interface
 Our User interface is divided in three sections:
-1. A drop-down to select by which column the data will be grouped by
+1. A drop-down for the user to select an input which is the column the data will be grouped by
 2. A bar chart showing the average speed of each group within the selected column
 3. A pivot table showing the count, the mean, the min and the max of each group of the selected column
 Here is the code used for our user interface:
@@ -41,5 +41,31 @@ ui <- fluidPage(
     column(4, DT::dataTableOutput("table_01", width = "100%"))
   )
 )
+```
+### Server
+The server to support our UI has two outputs, plot_01 and table_01. Both use a pivot table in order to get the mean speed for selected input. Here is the code for our server:
+```
+server <- function(input, output){
+  output$plot_01 <- renderPlot({
+    speed_per_x <- car_speed %>%
+      group_by_at(vars(input$X)) %>%
+      summarize(mean_speed = mean(Speed, na.rm = TRUE))
+    ggplot(speed_per_x, aes_string(x = input$X, y = "Average speed", fill=input$X)) +
+      geom_col() +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  })
+  
+  output$table_01 <- DT::renderDataTable({
+    speed_per_x <- car_speed %>%
+      group_by_at(vars(input$X)) %>%
+      summarize(count = n(),
+                mean = round(mean(Speed, na.rm = TRUE), 2),
+                min = min(Speed, na.rm = TRUE),
+                max = max(Speed, na.rm = TRUE)
+                )
+    
+    datatable(speed_per_x)
+  })
+}
 ```
 
