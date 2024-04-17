@@ -68,4 +68,6 @@ server <- function(input, output){
   })
 }
 ```
+### Shiny App visualization
+<img src="Images/nrc sentiment per product.png" height = 300, width = 400>
 
