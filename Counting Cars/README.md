@@ -69,5 +69,5 @@ server <- function(input, output){
 }
 ```
 ### Shiny App visualization
-<img src="Counting Cars/Images/Shiny App visualization.png" height = 300, width = 400>
+<img src="Counting Cars/Images/Shiny App visualization.PNG" height = 300, width = 400>
 
