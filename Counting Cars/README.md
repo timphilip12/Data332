@@ -22,4 +22,24 @@ df <- df %>%
   mutate(date_time = as.POSIXlt(date_time, format = "%Y-%m-%d %H:%M:%S"),
          date_time = format(date_time, "%H:%M:%S"))
 ```
+## Shiny Application
+### User Interface
+Our User interface is divided in three sections:
+1. A drop-down to select by which column the data will be grouped by
+2. A bar chart showing the average speed of each group within the selected column
+3. A pivot table showing the count, the mean, the min and the max of each group of the selected column
+Here is the code used for our user interface:
+```
+ui <- fluidPage(
+  titlePanel(title = "Explore Car Speed"),
+  h4('Car data collection at 30th Street, Rock Island'),
+  fluidRow(
+    column(2,
+           selectInput('X', 'Choose x', column_names)
+    ),
+    column(6, plotOutput('plot_01')),
+    column(4, DT::dataTableOutput("table_01", width = "100%"))
+  )
+)
+```
 
