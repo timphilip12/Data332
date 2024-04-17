@@ -28,7 +28,7 @@ Our User interface is divided in three sections:
 1. A drop-down for the user to select an input which is the column the data will be grouped by
 2. A bar chart showing the average speed of each group within the selected column
 3. A pivot table showing the count, the mean, the min and the max of each group of the selected column
-Here is the code used for our user interface:
+    Here is the code used for our user interface:
 ```
 ui <- fluidPage(
   titlePanel(title = "Explore Car Speed"),
