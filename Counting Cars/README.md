@@ -18,9 +18,9 @@ The collected data was recorded in the excel file Car_Data.xlsx
 1. Get rid of any mispelling manually to make sure that the data will be used correctly in R
 2. Get the time into a readable format using this code:
 ```
-df <- df %>%
-  mutate(date_time = as.POSIXlt(date_time, format = "%Y-%m-%d %H:%M:%S"),
-         date_time = format(date_time, "%H:%M:%S"))
+car_speed <- car_speed %>%
+  mutate(Time = as.POSIXlt(Time, format = "%Y-%m-%d %H:%M:%S"),
+         Time = format(Time, "%H:%M:%S"))
 ```
 ## Shiny Application
 ### User Interface
@@ -28,7 +28,6 @@ Our User interface is divided in three sections:
 1. A drop-down for the user to select an input which is the column the data will be grouped by
 2. A bar chart showing the average speed of each group within the selected column
 3. A pivot table showing the count, the mean, the min and the max of each group of the selected column
-    Here is the code used for our user interface:
 ```
 ui <- fluidPage(
   titlePanel(title = "Explore Car Speed"),
