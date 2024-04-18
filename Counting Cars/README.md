@@ -1,7 +1,7 @@
 # Counting cars IRL
-Tim Philip
-Maggie Huntley
-Ruth Girma
+- Tim Philip
+- Maggie Huntley
+- Ruth Girma
 ## Introduction
 This a repo to share our findings on car data collected on the speed radar sign on 30th Street, Rock Island IL
 
