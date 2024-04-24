@@ -1,4 +1,4 @@
-# Counting cars IRL
+# Counting cars IRL (group data)
 - Tim Philip
 - Maggie Huntley
 - Ruth Girma
