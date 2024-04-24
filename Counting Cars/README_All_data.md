@@ -1,4 +1,4 @@
-# Counting cars IRL
+# Counting cars IRL (All data)
 - Tim Philip
 - Maggie Huntley
 - Ruth Girma
@@ -19,12 +19,27 @@ The collected data was recorded in the excel file Car_Data.xlsx
 9. Day: The day of the week at the which the person recorded the vehicle
 
 ## Data cleaning
-1. Get rid of any mispelling manually to make sure that the data will be used correctly in R
-2. Get the time into a readable format using this code:
+1. Get the column titles from every tables to match with this following code:
+```
+setnames(table_name, old = 'old_column_title', new = 'new_column_title')
+```
+2. Get rid of the extra columns with this following code:
+```
+table_name<- subset(table_name, select = -column_name)
+```
+3. Put all the tables into one table with this following code:
+```
+combined_data <- bind_rows(Car, Car_Data, Car_Data_Excel, counting_cars, IRL_Car_Data, mergedCarData, speed_analyst_332_Car_Data, UpdatedCarTracking)
+```
+5. Get the time into a readable format using this code:
 ```
 car_speed <- car_speed %>%
   mutate(Time = as.POSIXlt(Time, format = "%Y-%m-%d %H:%M:%S"),
          Time = format(Time, "%H:%M:%S"))
+```
+6. Get every string in lower case to avoid duplicated with this following code:
+```
+table_name$column_name <- tolower(table_name$column_name)
 ```
 ## Shiny Application
 ### User Interface
@@ -74,4 +89,4 @@ server <- function(input, output){
 ### Shiny App visualization
 <img src="Images/Shiny App visualization.PNG" height = 300, width = 700>
 
-### Link to Shiny App:  https://timphilip.shinyapps.io/McQueens_Shiny/
+### Link to Shiny App:  https://timphilip.shinyapps.io/McQueens_Shiny_All/
