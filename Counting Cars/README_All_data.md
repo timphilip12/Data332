@@ -87,6 +87,6 @@ server <- function(input, output){
 }
 ```
 ### Shiny App visualization
-<img src="Images/Shiny App visualization.PNG" height = 300, width = 700>
+<img src="Images/Shiny App visualization 2.PNG" height = 300, width = 700>
 
 ### Link to Shiny App:  https://timphilip.shinyapps.io/McQueens_Shiny_All/
