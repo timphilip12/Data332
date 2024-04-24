@@ -3,7 +3,7 @@
 - Maggie Huntley
 - Ruth Girma
 ## Introduction
-This a repo to share our findings on car data collected on the speed radar sign on 30th Street, Rock Island IL
+This a repo to share our findings on car data collected on the speed radar sign on 30th Street, Rock Island IL. This only includes the cars recorded by the members of our group.
 
 ## Dictionnary
 The collected data was recorded in the excel file Car_Data.xlsx
