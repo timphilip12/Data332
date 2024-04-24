@@ -6,7 +6,7 @@
 This a repo to share our findings on car data collected on the speed radar sign on 30th Street, Rock Island IL. This includes the cars recorded by every member of the class.
 
 ## Dictionnary
-The collected data was recorded in the excel file Car_Data.xlsx
+The collected data was recorded in the excel files "Car_Data.xlsx", "Car.xlsx", "Car Data Excel.xlsx", "counting_cars.xlsx", "IRL_Car_Data.xlsx", "MergedCarData.xlsx", "Speed analyst 332 Car Data.xlsx" and "UpdatedCarTracking.xlsx"
 ### The columns used were:
 1. Date: the date on which the vehicle was collected
 2. Time: the time at which the vehicle was collected
