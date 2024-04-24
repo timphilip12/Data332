@@ -16,6 +16,7 @@ The collected data was recorded in the excel file Car_Data.xlsx
 6. Temperature: the temperature at the time of the collection in °F
 7. Weather: The weather at the time of the collection
 8. Name: The name of the person that recorded the vehicle
+9. Day: The day of the week at the which the person recorded the vehicle
 
 ## Data cleaning
 1. Get rid of any mispelling manually to make sure that the data will be used correctly in R
@@ -73,5 +74,5 @@ server <- function(input, output){
 ### Shiny App visualization
 <img src="Images/Shiny App visualization.PNG" height = 300, width = 700>
 
-### Link to Shiny App: https://timphilip.shinyapps.io/McQueens_Shiny_All/
+### Link to Shiny App:  https://timphilip.shinyapps.io/McQueens_Shiny/
 
