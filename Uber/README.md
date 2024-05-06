@@ -29,9 +29,9 @@ The uber data was from the files "uber-raw-data-apr14.csv", "uber-raw-data-aug14
    ```
    combined_uber$MonthName <- month.name[as.integer(combined_uber$Month)]
 
-combined_uber$Month <- paste(combined_uber$Month,       combined_uber$MonthName, sep = " ")
+      combined_uber$Month <- paste(combined_uber$Month,       combined_uber$MonthName, sep = " ")
 
-combined_uber$MonthName <- NULL
+      combined_uber$MonthName <- NULL
    ```
 5. Get the day of the week for each date with this code:
 ```
