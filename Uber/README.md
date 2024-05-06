@@ -64,6 +64,7 @@ library(data.table)
 library(shiny)
 library(shinydashboard)
 library(shinythemes)
+library(stringr)
 ```
 ## Pivot tables
 In order to create bar charts and heat maps, I created several pivot tables. They were all created using the following code:
@@ -75,7 +76,7 @@ pivot_table_name <- combined_uber %>%
 Some pivot tables were grouped by two different column.
 ## Shiny application
 ### User Interface
-My user interface has three pages. One for the bar charts, one for the heatmaps and one for the leaflet. I used the libraries shinydashboard and shinytheme to make it look better. I had 5 bar charts, 4 heatmaps and 1 leaflet. 
+My user interface has three pages. One for the bar charts, one for the heatmaps, one for the leaflet and one for the predictive charts. I used the libraries shinydashboard and shinytheme to make it look better. I had 5 bar charts, 4 heatmaps, 1 leaflet and 2 predictive charts. 
 ```
 ui <- dashboardPage(
   skin = "purple",
@@ -84,7 +85,8 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem("Bar Chart", tabName = "bar_chart", icon = icon("bar-chart")),
       menuItem("Heatmap", tabName = "heatmap", icon = icon("heatmap")),
-      menuItem("Leaflet Map", tabName = "map", icon = icon("map"))
+      menuItem("Leaflet Map", tabName = "map", icon = icon("map")),
+      menuItem("Predictive chart", tabName = "predictive_chart", icon = icon("predictive"))
     )
   ),
   dashboardBody(
@@ -135,6 +137,17 @@ ui <- dashboardPage(
         tabName = "map",
         leafletOutput("map"),
         verbatimTextOutput("map_desc")
+      ),
+      tabItem(
+        tabName = "predictive_chart",
+        fluidRow(
+          column(12, plotOutput("predictive_chart1")),
+          column(12, verbatimTextOutput("predictive_chart1_desc"))
+        ),
+        fluidRow(
+          column(12, plotOutput("predictive_chart2")),
+          column(12, verbatimTextOutput("predictive_chart2_desc"))
+        )
       )
     )
   )
@@ -267,6 +280,30 @@ server <- function(input, output) {
   output$map_desc <- renderText({
     "Description: This map only displays a sample of 1000 rows out the 4.5 millions rows of the dataset. I couldn't run it with 4.5 millions rows because it was too big for my laptop. I then decided to take a random sample of 1000 rows so I have a map to show."
   })
+  
+  output$predictive_chart1 <- renderPlot({
+    ggplot(rides_per_month, aes(x = Month_Number, y = rides)) +
+      geom_point() + # Scatter plot
+      geom_abline(intercept = intercept_month, slope = slope_month, color = "red") +
+      labs(title = "Average number of Rides per Month", x = "Month", y = "Number of Rides")
+  })
+  
+  output$predictive_chart1_desc <- renderText({
+    "Description: This is a scatter plot with a regression line that predicts how the number of rides will evoluate when grouped by month. We can see that the slope of the regression line is positive which means that the number of rides will probably grow in the future months."
+  })
+  
+  output$predictive_chart2 <- renderPlot({
+    ggplot(rides_per_day, aes(x = Day, y = rides)) +
+      geom_point() + # Scatter plot
+      geom_abline(intercept = intercept_day, slope = slope_day, color = "red") +  # Add regression line
+      labs(title = "average number of Rides per Day of the Month", x = "Day", y = "Number of Rides")
+  })
+  
+  output$predictive_chart2_desc <- renderText({
+    "Description: This is scatter plot with a regression line that predicts how the number of rides will evoluate when grouped by day of the month. We can see that the slope is slightly negative which means that people are using uber a little bit more in the first days of the month. However, this is affected by the facts that only half of the month in this data have 31 days."
+  })
+  
+  
 }
 ```
 
