@@ -461,3 +461,5 @@ server <- function(input, output, session) {
 
 ### Link to Shiny app: https://timphilip.shinyapps.io/Final_Project/
 
+### Link to Kanban board: https://github.com/users/timphilip12/projects/1/views/1
+
