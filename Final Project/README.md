@@ -7,7 +7,7 @@ Tennis is a sport where a lot of different factors determine the winner of the m
 Besides, we have made available an easy access to the important stats of the professional tennis players.
 
 ## Dictionary 📖
-The tennis data was extracted from the followinf files: "atp_matches_2023.csv", "atp_matches_2022.csv", "atp_matches_2021.csv", "atp_matches_2020.csv", "atp_matches_2019.csv", "atp_matches_2018.csv", "atp_matches_2017.csv", ... "atp_matches_2000.csv".
+The tennis data was extracted from the following files: "atp_matches_2023.csv", "atp_matches_2022.csv", "atp_matches_2021.csv", "atp_matches_2020.csv", "atp_matches_2019.csv", "atp_matches_2018.csv", "atp_matches_2017.csv", ... "atp_matches_2000.csv".
 
 We analyzed the tennis matches in the professional circuit from 2000 to 2023.
 
@@ -19,7 +19,7 @@ tennis_data <- bind_rows(tennis_data_2023, tennis_data_2022, tennis_data_2021, t
 
 2. Save the tennis_data into RDS
 ```
-tennis_data <- readRDS("tennis_data.rds")
+saveRDS(tennis_data, "tennis_data.rds")
 ```
 
 3. Creating pivot table for wins and loses 
@@ -278,6 +278,185 @@ ggplot(wins_by_age, aes(x = winner_age, y = wins)) +
        y = "Number of Matches Won") +
   theme_minimal() +  
   theme(axis.text.x = element_text(angle = 0, hjust = 1))
+```
+
+## Shiny App
+### User Interface
+```
+ui <- navbarPage(
+  "Tennis Player Statistics App",
+  tabPanel(
+    "Player Statistics",
+    fluidPage(
+      titlePanel("Tennis Player Statistics"),
+      sidebarLayout(
+        sidebarPanel(
+          pickerInput(
+            inputId = "player_search",
+            label = "Enter player name:",
+            choices = unique(pivot_per_player$player_name),
+            options = list(`live-search` = TRUE),
+            multiple = FALSE
+          ),
+          actionButton("submit_button", "Get Statistics")
+        ),
+        mainPanel(
+          h4("Player Statistics"),
+          verbatimTextOutput("player_stats")
+        )
+      )
+    )
+  ),
+  tabPanel(
+    "Players per country",
+    fluidPage(
+      titlePanel("Country Positions"),
+      leafletOutput("map")
+    )
+  ),
+  tabPanel(
+    "Plots",
+    fluidPage(
+      titlePanel("Tennis Data Plots"),
+      plotOutput("plot1"),
+      plotOutput("plot2"),
+      plotOutput("plot3"),
+      plotOutput("plot4"),
+      plotOutput("plot5")
+    )
+  )
+)
+```
+## Server
+```
+server <- function(input, output, session) {
+  # Function to filter data based on player name
+  player_filter <- reactive({
+    req(input$submit_button)
+    player <- input$player_search
+    filtered_data <- subset(pivot_per_player, player_name == player)
+    return(filtered_data)
+  })
+  
+  # Function to get player statistics
+  player_stats <- reactive({
+    filtered_data <- player_filter()
+    player <- input$player_search
+    player_height <- filtered_data$player_height
+    player_hand <- filtered_data$player_hand
+    age_last_match <- filtered_data$age_last_match
+    matches_played <- filtered_data$wins + filtered_data$losses
+    matches_won <- filtered_data$wins 
+    matches_lost <- filtered_data$losses
+    win_percentage <- filtered_data$ratio * 100
+    average_match_length <- filtered_data$average_match_length
+    average_ace <- filtered_data$average_ace
+    average_df <- filtered_data$average_df
+    average_bp_faced <- filtered_data$average_bp_faced
+    average_bp_saved <- filtered_data$average_bp_saved
+    return(list(
+      player_height = player_height,
+      player_hand = player_hand,
+      age_last_match = age_last_match,
+      matches_played = matches_played, 
+      matches_won = matches_won, 
+      matches_lost = matches_lost,
+      win_percentage = win_percentage,
+      average_match_length = average_match_length,
+      average_ace = average_ace,
+      average_df = average_df,
+      average_bp_faced = average_bp_faced,
+      average_bp_saved = average_bp_saved
+      
+    ))
+  })
+  
+  # Display player statistics
+  output$player_stats <- renderPrint({
+    if(input$submit_button > 0){
+      player <- input$player_search
+      cat("Statistics for", player, ":\n")
+      cat("Player heigth in cm: ", player_stats()$player_height, "\n")
+      cat("Player hand:", player_stats()$player_hand, "\n")
+      cat("Player age at last match played: ", player_stats()$age_last_match, "\n")
+      cat("Matches Played:", player_stats()$matches_played, "\n")
+      cat("Matches Won:", player_stats()$matches_won, "\n")
+      cat("Matches Lost:", player_stats()$matches_lost, "\n")
+      cat("Win Percentage:", sprintf("%.2f%%", player_stats()$win_percentage), "\n")
+      cat("Average match length in minutes:", player_stats()$average_match_length, "\n")
+      cat("Average number of aces per match:", player_stats()$average_ace, "\n")
+      cat("Average number of double faults per match:", player_stats()$average_df, "\n")
+      cat("Average number of break points faced per match:", player_stats()$average_bp_faced, "\n")
+      cat("Average number of break points saved per match:", player_stats()$average_bp_saved, "\n")
+    }
+  })
+  
+  # Render leaflet map
+  output$map <- renderLeaflet({
+    leaflet() %>%
+      addTiles() %>%
+      addCircleMarkers(
+        data = country_positions,
+        lat = ~latitude,
+        lng = ~longitude,
+        radius = ~marker_size
+      )
+  })
+  
+  # Render plots
+  output$plot1 <- renderPlot({
+    ggplot(average_aces_per_surface, aes(x = surface, y = average_aces, fill = surface)) +
+      geom_col() +
+      theme_minimal() +
+      labs(title = "Average Number of Aces on Different Surfaces", x = "Surface", y = "Average Aces")
+  })
+  
+  output$plot2 <- renderPlot({
+    ggplot(average_first_serve_won_by_hand_surface, aes(x = player_hand, y = average_1st_won, fill = surface)) +
+      geom_bar(stat = "identity", position = position_dodge()) + # Use dodge to separate bars based on surface
+      labs(title = "Average Number of First Serves Won by Player Hand and Surface",
+           x = "Player Hand",
+           y = "Number of First Serves Won",
+           fill = "Surface") +
+      theme_minimal() +
+      scale_fill_manual(values = c("Clay" = "orange", "Grass" = "green", "Hard" = "blue")) + #assign colors
+      geom_text(aes(label = average_1st_won), position = position_dodge(width = 0.9), vjust = -0.3)
+  })
+  
+  output$plot3 <- renderPlot({
+    ggplot(height_for_plotting, aes(x = Category, y = Count, fill = Category)) +
+      geom_bar(stat = "identity") +
+      labs(title = "Match Outcomes Based on Player Height",
+           x = "",
+           y = "Number of Matches",
+           fill = "Outcome") +
+      theme_minimal() +
+      geom_text(aes(label = Count), vjust = -0.5)
+  })
+  
+  output$plot4 <- renderPlot({
+    ggplot(height_surface_data_for_plotting, aes(x = surface, y = Count, fill = Outcome)) +
+      geom_bar(stat = "identity", position = position_dodge(), width = 0.7) +
+      scale_fill_brewer(palette = "Pastel1") +
+      labs(title = "Match Outcomes by Player Height on Different Surfaces",
+           x = "Surface",
+           y = "Number of Matches",
+           fill = "Match Outcome") +
+      theme_minimal() +  
+      geom_text(aes(label = Count, y = Count/2), position = position_dodge(width = 0.7), vjust = 0.5)
+  })
+  
+  output$plot5 <- renderPlot({
+    ggplot(wins_by_age, aes(x = winner_age, y = wins)) +
+      geom_line(group=1, color = "steelblue", size=1) +  
+      geom_point(color = "red", size=3, shape=21, fill="white") +  
+      labs(title = "Number of Matches Won by Age",
+           x = "Age",
+           y = "Number of Matches Won") +
+      theme_minimal() +  
+      theme(axis.text.x = element_text(angle = 0, hjust = 1))
+  })
+}
 ```
 
 ### Link to Shiny app: https://timphilip.shinyapps.io/Final_Project/
